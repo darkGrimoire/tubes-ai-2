@@ -43,9 +43,9 @@
     (test (> ?total ?entry))
     =>
     (printout t "Masukkan col lokasi bom pada papan" crlf)
-    (bind ?col_bom =(read) )
+    (bind ?col_bom (read) )
     (printout t "Masukkan row lokasi bom pada papan" crlf)
-    (bind ?row_bom =(read) )
+    (bind ?row_bom (read) )
     (retract ?bomb)
     (assert (bom_dimasukkan (+ ?entry 1)))
     (assert (koordinat_bom ?col_bom ?row_bom))
@@ -75,6 +75,7 @@
     (not (empty_koor 0 0))
     =>
     (retract ?papan)
+    (assert (papan berlangsung))
     (assert (empty_koor 0 0))
 )
 (defrule tambah_sel_kosong
@@ -112,5 +113,184 @@
     (assert (sel (col ?a) (row ?b) (nilai -1)))
 )
 
+(defrule bom_di_atas
+    (empty_koor ?col ?row)
+    (not (atas ?col ?row))
+    (koordinat_bom ?x ?y)
+    ?sel <- (sel (col ?col) (row ?row) (status ?c) (nilai ?d))
+    (test (and (= ?col ?x) (= (+ ?row 1) ?y)))
+    (not (test (= ?d -1)))
+    =>
+    (assert (atas ?col ?row))
+    (retract ?sel)
+    (assert (sel (col ?col) (row ?row) (nilai (+ ?d 1))))
+)
 
+(defrule bom_di_kanan_atas
+    (empty_koor ?col ?row)
+    (not (kanan_atas ?col ?row))
+    (koordinat_bom ?x ?y)
+    ?sel <- (sel (col ?col) (row ?row) (status ?c) (nilai ?d))
+    (test (and (= (+ ?col 1) ?x) (= (+ ?row 1) ?y)))
+    (not (test (= ?d -1)))
+    =>
+    (assert (kanan_atas ?col ?row))
+    (retract ?sel)
+    (assert (sel (col ?col) (row ?row) (nilai (+ ?d 1))))
+)
 
+(defrule bom_di_kanan
+    (empty_koor ?col ?row)
+    (not (kanan ?col ?row))
+    (koordinat_bom ?x ?y)
+    ?sel <- (sel (col ?col) (row ?row) (status ?c) (nilai ?d))
+    (test (and (= (+ ?col 1) ?x) (= ?row ?y)))
+    (not (test (= ?d -1)))
+    =>
+    (assert (kanan ?col ?row))
+    (retract ?sel)
+    (assert (sel (col ?col) (row ?row) (nilai (+ ?d 1))))
+)
+
+(defrule bom_di_kanan_bawah
+    (empty_koor ?col ?row)
+    (not (kanan_bawah ?col ?row))
+    (koordinat_bom ?x ?y)
+    ?sel <- (sel (col ?col) (row ?row) (status ?c) (nilai ?d))
+    (test (and (= (+ ?col 1) ?x) (= (- ?row 1) ?y)))
+    (not (test (= ?d -1)))
+    =>
+    (assert (kanan_bawah ?col ?row))
+    (retract ?sel)
+    (assert (sel (col ?col) (row ?row) (nilai (+ ?d 1))))
+)
+
+(defrule bom_di_bawah
+    (empty_koor ?col ?row)
+    (not (bawah ?col ?row))
+    (koordinat_bom ?x ?y)
+    ?sel <- (sel (col ?col) (row ?row) (status ?c) (nilai ?d))
+    (test (and (= ?col ?x) (= (- ?row 1) ?y)))
+    (not (test (= ?d -1)))
+    =>
+    (assert (bawah ?col ?row))
+    (retract ?sel)
+    (assert (sel (col ?col) (row ?row) (nilai (+ ?d 1))))
+)
+
+(defrule bom_di_kiri_bawah
+    (empty_koor ?col ?row)
+    (not (kiri_bawah ?col ?row))
+    (koordinat_bom ?x ?y)
+    ?sel <- (sel (col ?col) (row ?row) (status ?c) (nilai ?d))
+    (test (and (= (- ?col 1) ?x) (= (- ?row 1) ?y)))
+    (not (test (= ?d -1)))
+    =>
+    (assert (kiri_bawah ?col ?row))
+    (retract ?sel)
+    (assert (sel (col ?col) (row ?row) (nilai (+ ?d 1))))
+)
+
+(defrule bom_di_kiri
+    (empty_koor ?col ?row)
+    (not (kiri ?col ?row))
+    (koordinat_bom ?x ?y)
+    ?sel <- (sel (col ?col) (row ?row) (status ?c) (nilai ?d))
+    (test (and (= (- ?col 1) ?x) (= ?row ?y)))
+    (not (test (= ?d -1)))
+    =>
+    (assert (kiri ?col ?row))
+    (retract ?sel)
+    (assert (sel (col ?col) (row ?row) (nilai (+ ?d 1))))
+)
+
+(defrule bom_di_kiri_atas
+    (empty_koor ?col ?row)
+    (not (kiri_atas ?col ?row))
+    (koordinat_bom ?x ?y)
+    ?sel <- (sel (col ?col) (row ?row) (status ?c) (nilai ?d))
+    (test (and (= (- ?col 1) ?x) (= (+ ?row 1) ?y)))
+    (not (test (= ?d -1)))
+    =>
+    (assert (kiri_atas ?col ?row))
+    (retract ?sel)
+    (assert (sel (col ?col) (row ?row) (nilai (+ ?d 1))))
+)
+
+(defrule papan_selesai
+    (declare (salience -5))
+    ?papan <- (papan berlangsung)
+    =>
+    (retract ?papan)
+    (assert (papan selesai))
+)
+
+(defrule bersih_koordinat_bom
+    ?koorbom <- (koordinat_bom ?x ?y)
+    (papan selesai)
+    =>
+    (retract ?koorbom)
+)
+
+(defrule bersih_empty_koor
+    ?emkoor <- (empty_koor ?x ?y)
+    (papan selesai)
+    =>
+    (retract ?emkoor)
+)
+
+(defrule bersih_atas
+    ?pos <- (atas ?x ?y)
+    (papan selesai)
+    =>
+    (retract ?pos)
+) 
+
+(defrule bersih_kanan_atas
+    ?pos <- (kanan_atas ?x ?y)
+    (papan selesai)
+    =>
+    (retract ?pos)
+)
+
+(defrule bersih_kanan
+    ?pos <- (kanan ?x ?y)
+    (papan selesai)
+    =>
+    (retract ?pos)
+)
+
+(defrule bersih_kanan_bawah
+    ?pos <- (kanan_bawah ?x ?y)
+    (papan selesai)
+    =>
+    (retract ?pos)
+)
+
+(defrule bersih_bawah
+    ?pos <- (bawah ?x ?y)
+    (papan selesai)
+    =>
+    (retract ?pos)
+)
+
+(defrule bersih_kiri_bawah
+    ?pos <- (kiri_bawah ?x ?y)
+    (papan selesai)
+    =>
+    (retract ?pos)
+)
+
+(defrule bersih_kiri
+    ?pos <- (kiri ?x ?y)
+    (papan selesai)
+    =>
+    (retract ?pos)
+)
+
+(defrule bersih_kiri_atas
+    ?pos <- (kiri_atas ?x ?y)
+    (papan selesai)
+    =>
+    (retract ?pos)
+)
