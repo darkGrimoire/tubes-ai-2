@@ -1,3 +1,10 @@
+(deftemplate sel
+    (slot col (default ?NONE))
+    (slot row (default ?NONE))
+    (slot status (default closed))
+    (slot nilai (default 0))
+)
+
 ; Start the program
 (defrule start
     (declare (salience 500))
@@ -36,23 +43,14 @@
     (test (> ?total ?entry))
     =>
     (printout t "Masukkan col lokasi bom pada papan" crlf)
-    (assert (col_bom =(read)))
+    (bind ?col_bom =(read) )
     (printout t "Masukkan row lokasi bom pada papan" crlf)
-    (assert (row_bom =(read)))
+    (bind ?row_bom =(read) )
     (retract ?bomb)
     (assert (bom_dimasukkan (+ ?entry 1)))
+    (assert (koordinat_bom ?col_bom ?row_bom))
 )
 
-; Combine separated row and col into one coordinate
-(defrule gabung_koordinat
-    (declare (salience 10))
-    ?bomrow <- (row_bom ?y)
-    ?bomcol <- (col_bom ?x)
-    =>
-    (retract ?bomrow)
-    (retract ?bomcol)
-    (assert (koordinat_bom ?x ?y))
-)
 
 (defrule input_selesai
     ?status_input <- (input_complete no)
@@ -72,14 +70,14 @@
     (assert (papan mulai))
 )
 
-(defrule buat_sel_0_0
+(defrule buat_sel_kosong_0_0
     ?papan <- (papan mulai)
-    (not (sel ?x ?y closed ?b))
+    (not (empty_koor 0 0))
     =>
     (retract ?papan)
     (assert (empty_koor 0 0))
 )
-(defrule tambah_sel
+(defrule tambah_sel_kosong
     (empty_koor ?col ?row)
     (ukuran ?size)
     (test (< ?row ?size))
@@ -88,7 +86,7 @@
     (assert (empty_koor (+ ?col 1) ?row))
 )
 
-(defrule tambah_sel_pindah_row
+(defrule tambah_sel_kosong_pindah_row
     (empty_koor ?col ?row)
     (ukuran ?size)
     (test (< (+ ?row 1) ?size))
@@ -96,4 +94,23 @@
     =>
     (assert (empty_koor 0 (+ ?row 1)))
 )
+
+(defrule buat_sel
+    (declare (salience 10))
+    (empty_koor ?col ?row)
+    =>
+    (assert (sel (col ?col) (row ?row)))
+)
+
+(defrule sel_bom
+    ?sel <- (sel (col ?a) (row ?b) (status ?c) (nilai 0))
+    (koordinat_bom ?x ?y)
+    (test (= ?a ?x))
+    (test (= ?b ?y))
+    =>
+    (retract ?sel)
+    (assert (sel (col ?a) (row ?b) (nilai -1)))
+)
+
+
 
