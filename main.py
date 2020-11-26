@@ -5,7 +5,12 @@ def cetakPapan(papan):
     for i in range(len(papan)):
         print(str(i) + "|", end="")
         for j in range(len(papan[i])):
-            print(papan[i][j], end=' ')
+            print(papan[i][j], end='')
+            if (j != ukuran-1):
+                if (papan[i][j+1] == -1):
+                    print(" ",end="")
+                else:
+                    print("  ",end="")
         print("")
     print("----------")
 
@@ -33,7 +38,6 @@ if __name__ == "__main__":
         lok_bom = input("Masukkan koordinat bom (format 'row,col'): ")
         arr_lok_bom = lok_bom.split(",")
         papan[int(arr_lok_bom[0])][int(arr_lok_bom[1])] = -1
-    cetakPapan(papan)
     for i in range(ukuran):
         for j in range(ukuran):
             if (papan[i][j] != -1):
