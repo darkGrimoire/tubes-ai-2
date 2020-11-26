@@ -2,7 +2,7 @@
 Tubes AI 2: CLIPS Exploration
 
 - Buka command prompt di root directory program
-- Jalankan CLIPS di command prompt
-- Masukkan file minesweeper.clp ke dalam CLIPS dengan perintah (load minesweeper.clp)
-- jalankan perintah (reset)
-- Jalankan perintah (run) untuk memulai sistem
+- Jalankan file python menggunakan python
+- masukkan data-data yang dibutuhkan
+- .......
+- profit
