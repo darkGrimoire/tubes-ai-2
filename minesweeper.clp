@@ -135,3 +135,19 @@
 ;     (retract ?sel)
 ;     (assert (sel (col ?col) (row ?row) (nilai (+ ?d 1))))
 ; )
+(defrule buka_kotak
+    ?open <- (open ?col ?row)
+    ?sel_closed <- (sel (col ?col) (row ?row) (status closed) (nilai ?x))
+    =>
+    (retract ?open)
+    (retract ?sel_closed)
+    ; Assert si sel dengan nilai ambil dari fungsi python
+    ; (assert (sel (col ?col) (row ?row) (status opened) (nilai )))
+)
+
+(defrule pingin_buka_tapi_gak_ada
+    ?open <- (open ?col ?row)
+    (not (sel (col ?col) (row ?row) (status ?status) (nilai ?x)))
+    =>
+    (retract ?open)
+)
