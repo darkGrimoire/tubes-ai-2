@@ -158,6 +158,7 @@
 ;     (assert (sel (col ?col) (row ?row) (nilai (+ ?d 1))))
 ; )
 (defrule buka_kotak
+    (declare (salience 30))
     ?open <- (open ?col ?row)
     ?sel_closed <- (sel (col ?col) (row ?row) (status closed) (nilai ?x))
     (game mulai)

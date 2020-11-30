@@ -78,7 +78,7 @@ def cetakPapanBasedOnFacts():
                     temu = True
                 else:
                     i += 1
-            nilai_sel = re.search("(nilai ([0-9]|X)*)", str(fakta_sel))
+            nilai_sel = re.search("(nilai ([0-9]|X|F)*)", str(fakta_sel))
             nilai_sel = nilai_sel.group(0)
             nilai_sel = nilai_sel.replace("nilai ","")
             print(nilai_sel, end='')
