@@ -70,6 +70,33 @@ class MainProgram:
                 status_papan.append((row, col, nilai_sel, status))
         return status_papan
 
+    def printKoordinatBomb(self):
+        daftar_fakta_sel = []
+        
+        # Masukkan semua fakta mengenai papan
+        for fact in self.env.facts():
+            if re.search("\(sel \(col ", str(fact)):
+                daftar_fakta_sel.append(fact)
+        
+        for row in range(len(self.papan)):
+            for col in range(len(self.papan[row])):
+                i = 0
+                temu = False
+                while ((i < len(daftar_fakta_sel)) and (not temu)):
+                    temp_fakta = daftar_fakta_sel[i]
+                    temp_str = "\(col "+str(col)+"\) \(row "+str(row)+"\)"
+                    if re.search(temp_str, str(temp_fakta)):
+                        fakta_sel = temp_fakta
+                        temu = True
+                    else:
+                        i += 1
+                        continue
+                nilai_sel = re.search("(nilai F)", str(fakta_sel))
+                if not nilai_sel:
+                    continue
+                self.printToUI(f"💣 {row}, {col}")
+        
+
     def main(self):
         # udah pasti ukuran sama jumlah bom disetel sebelumnya
         for i in range(self.ukuran):
@@ -92,8 +119,13 @@ class MainProgram:
                 new_fact['nilai'] = clips.Symbol('X')
                 new_fact.assertit()
         self.is_finished = 1
+        count = 0
         while (self.env.run(1)):
-            time.sleep(0.02)
+            time.sleep(0.05)
+            count += 1
+            print(f"ITERATION: {count}")
         self.is_finished = 2
         self.printToUI('Program finished!')
+        self.printToUI('Koordinat Bomb:')
+        self.printKoordinatBomb()
     

@@ -88,6 +88,7 @@
     ?look <- (look_at_cell (col ?col) (row ?row) (col_n ?cn) (row_n ?rn))
     (not (sel (col ?cn) (row ?rn) (status ?status) (nilai ?x)))
     ?sn <- (sel_neighbors (col ?col) (row ?row) (flags ?f) (closed ?c) (total ?t))
+    (game mulai)
     =>
     (retract ?look)
     (bind ?c_new (- ?c 1))
@@ -101,6 +102,7 @@
     ?look <- (look_at_cell (col ?col) (row ?row) (col_n ?cn) (row_n ?rn))
     (sel (col ?cn) (row ?rn) (status opened) (nilai ?x))
     ?sn <- (sel_neighbors (col ?col) (row ?row) (flags ?f) (closed ?c) (total ?t))
+    (game mulai)
     =>
     (retract ?look)
     (bind ?c_new (- ?c 1))
@@ -113,6 +115,7 @@
 (defrule look_dan_ada
     ?look <- (look_at_cell (col ?col) (row ?row) (col_n ?cn) (row_n ?rn))
     (sel (col ?cn) (row ?rn) (status ?status) (nilai ?x))
+    (game mulai)
     =>
     (retract ?look)
     (assert (check ?col ?row))
@@ -122,6 +125,7 @@
     ?checking <- (check ?col ?row)
     ?checked_sel <- (sel (col ?col) (row ?row) (status opened) (nilai ?x))
     ?sn <- (sel_neighbors (col ?col) (row ?row) (flags ?f) (closed ?c) (total ?t))
+    (game mulai)
     =>
     (if (and (= ?x (+ ?f ?c)) (not (= ?c 0)))
         then
@@ -138,6 +142,7 @@
     ?checking <- (check ?col ?row)
     ?checked_sel <- (sel (col ?col) (row ?row) (status opened) (nilai ?x))
     ?sn <- (sel_neighbors (col ?col) (row ?row) (flags ?x) (closed ?c) (total ?t))
+    (game mulai)
     =>
     (loop-for-count (?i -1 1) do
         (loop-for-count (?j -1 1) do
@@ -151,6 +156,7 @@
 (defrule flag_tapi_gak_ada
     ?mark <- (flag ?col ?row)
     (not (sel (col ?col) (row ?row) (status closed) (nilai ?x)))
+    (game mulai)
     =>
     (retract ?mark)
 )
@@ -179,6 +185,7 @@
 (defrule tambah_flag
     ?f <- (addflag ?c ?r)
     ?s <- (sel_neighbors (col ?c) (row ?r) (flags ?fa) (closed ?closed) (total ?t))
+    (game mulai)
     =>
     (retract ?f)
     (retract ?s)
