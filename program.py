@@ -1,6 +1,6 @@
 import clips
 import re
-
+import time
 class MainProgram:
     def __init__(self):
         self.papan = []
@@ -13,6 +13,7 @@ class MainProgram:
         self.jumlah_bom = 0
         self.bombLoc = []
         self.is_finished = 0
+        self.printToUI = None
 
     def getNilaiSel(self, col, row):
         # INGET, di ARRAY disimpen dalam format papan[row][col]
@@ -34,7 +35,6 @@ class MainProgram:
                     self.papan[sel_tetangga[0]][sel_tetangga[1]] = temp + 1
     
     def updatePapanBasedOnFacts(self):
-        print("update!")
         daftar_fakta_sel = []
         status_papan = []
     
@@ -62,7 +62,7 @@ class MainProgram:
                 nilai_sel = nilai_sel.replace("nilai ","")
                 status = re.search("(status (flag|closed|opened)*)", str(fakta_sel))
                 status = status.group(0)
-                status = status.replace("status", "")
+                status = status.replace("status ", "")
                 status_papan.append((col, row, nilai_sel, status))
         return status_papan
 
@@ -88,8 +88,10 @@ class MainProgram:
                 new_fact['nilai'] = clips.Symbol('X')
                 new_fact.assertit()
         self.is_finished = 1
-        self.env.run()
-        # self.is_finished = 2
+        while (self.env.run(1)):
+            time.sleep(0.02)
+        self.is_finished = 2
+        self.printToUI('Program finished!')
         for fact in self.env.facts():
             print(fact)
     

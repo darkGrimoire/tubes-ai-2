@@ -12,12 +12,14 @@ class Model:
         self.program = None
         self.updater = None
         self.programThread = None
+        self.printToUi = None
 
     def startAI(self):
         self.program = MainProgram()
         self.program.ukuran = self.size
         self.program.jumlah_bom = self.bombs
         self.program.bombLoc = self.bombLoc
+        self.program.printToUI = self.printToUi
         self.programThread = threading.Thread(
             target=self.program.main
         )
@@ -37,5 +39,5 @@ class checkFromProgram(QThread):
             time.sleep(0.1)
         print("setup finished")
         while not self.model.program.is_finished == 2:
-            time.sleep(0.1)
+            time.sleep(0.3)
             self.progress.emit(self.model.program.updatePapanBasedOnFacts())
