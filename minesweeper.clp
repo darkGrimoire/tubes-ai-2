@@ -5,12 +5,6 @@
     (slot nilai (default ?NONE))
 )
 
-(deftemplate sel_prob
-    (slot col (default ?NONE))
-    (slot row (default ?NONE))
-    (slot prob (default ?NONE))
-)
-
 (deftemplate look_at_cell
     (slot col (default 0))
     (slot row (default 0))
