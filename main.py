@@ -1,5 +1,6 @@
 import clips
 import re
+import time
 
 papan = []
 env = clips.Environment()
@@ -94,7 +95,34 @@ def cetakPapanBasedOnFacts():
         print("-", end="")
     print('')
 
-
+def printKoordinatBomb():
+    global papan
+    daftar_fakta_sel = []
+    koordinatBomb = []
+    
+    # Masukkan semua fakta mengenai papan
+    for fact in env.facts():
+        if re.search("\(sel \(col ", str(fact)):
+            daftar_fakta_sel.append(fact)
+    
+    for row in range(len(papan)):
+        for col in range(len(papan[row])):
+            i = 0
+            temu = False
+            while ((i < len(daftar_fakta_sel)) and (not temu)):
+                temp_fakta = daftar_fakta_sel[i]
+                temp_str = "\(col "+str(col)+"\) \(row "+str(row)+"\)"
+                if re.search(temp_str, str(temp_fakta)):
+                    fakta_sel = temp_fakta
+                    temu = True
+                else:
+                    i += 1
+                    continue
+            nilai_sel = re.search("(nilai F)", str(fakta_sel))
+            if not nilai_sel:
+                continue
+            print(f"{row}, {col}")
+    
 def getNilaiSel(col, row):
     # INGET, di ARRAY disimpen dalam format papan[row][col]
     return papan[row][col]
@@ -154,9 +182,18 @@ if __name__ == "__main__":
             new_fact['row'] = row
             new_fact['nilai'] = clips.Symbol('X')
             new_fact.assertit()
-    env.run()
-    # for rule in env.rules():
-    #     print(rule)
-    for fact in env.facts():
-        print(fact)
+    count = 1
+    while (env.run(5)):
+        # print("AGENDA: ")
+        # for rule in env.activations():
+        #     print(rule)
+        # print("FACTS: ")
+        # for fact in env.facts():
+        #     print(fact)
+        # time.sleep(0.02)
+        # input()
+        print(f"ITERATION: {count}")
+        count += 1
     cetakPapanBasedOnFacts()
+    print("Koordinat bom:")
+    printKoordinatBomb()
