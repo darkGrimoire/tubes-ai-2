@@ -232,3 +232,44 @@
     (retract ?game_state)
     (assert (game selesai))
 )
+
+
+; RULE BERSIH-BERSIH                                ;
+; Untuk menghapus facts yang tidak dibutuhkan lagi  ;
+; setelah game selesai                              ;
+
+(defrule bersih_bersih_open
+    (game selesai)
+    ?open <- (open ?x ?y)
+    => 
+    (retract ?open)
+)
+
+(defrule bersih_bersih_check
+    (game selesai)
+    ?check <- (check ?x ?y)
+    =>
+    (retract ?check)
+)
+
+(defrule bersih_bersih_neighbors
+    (game selesai)
+    ?neighbor <- (sel_neighbors (col ?c) (row ?r) (flags ?f) (closed ?cl) (total ?t))
+    =>
+    (retract ?neighbor)
+)
+
+(defrule bersih_bersih_look_at_cell
+    (game selesai)
+    ?look <- (look_at_cell (col ?c) (row ?r) (col_n ?cn) (row_n ?rn))
+    =>
+    (retract ?look)
+)
+
+(defrule bersih_bersih_flag
+    (game selesai)
+    ?flag <- (addflag ?a ?b)
+    =>
+    (retract ?flag)
+
+)
