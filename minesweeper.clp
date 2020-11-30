@@ -54,7 +54,7 @@
 )
 
 (defrule buka_kotak
-    (declare (salience 30))
+    (declare (salience 500))
     ?open <- (open ?col ?row)
     ?sel_closed <- (sel (col ?col) (row ?row) (status closed) (nilai ?x))
     (game mulai)
@@ -212,6 +212,7 @@
 )
 
 (defrule apakah_aq_kalah
+    (declare (salience 50))
     (sel (col ?col) (row ?row) (status opened) (nilai -1))
     ?game <- (game mulai)
     =>
@@ -222,7 +223,7 @@
 )
 
 (defrule apakah_aq_menang
-    (declare (salience 500))
+    (declare (salience 50))
     (jumlah_bom 0)
     ?game_state <- (game mulai)
     =>
