@@ -99,11 +99,14 @@ def getNilaiSel(col, row):
     # INGET, di ARRAY disimpen dalam format papan[row][col]
     return papan[row][col]
 
+def printui(msg):
+    pass
 
 if __name__ == "__main__":
     print("Hallo")
     env.clear()
     env.define_function(getNilaiSel)
+    env.define_function(printui)
     env.load("minesweeper.clp")
     ukuran = 0
     jumlah_bom = 101
