@@ -44,7 +44,8 @@ class Ui_MainWindow(QObject):
         self.gridLayout.addItem(spacerItem3, 2, 1, 1, 1)
         self.horizontalLayout.addWidget(self.msFrame)
         self.sidebarFrame = QtWidgets.QFrame(self.centralwidget)
-        self.sidebarFrame.setMaximumSize(QtCore.QSize(300, 16777215))
+        self.sidebarFrame.setMinimumSize(QtCore.QSize(300, 0))
+        self.sidebarFrame.setMaximumSize(QtCore.QSize(400, 16777215))
         self.sidebarFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.sidebarFrame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.sidebarFrame.setObjectName("sidebarFrame")
@@ -205,6 +206,11 @@ class Ui_MainWindow(QObject):
         petakButton.setText(str(nilai))
         petakButton.setEnabled(False)
 
+    def isOpenedMinesweeperButton(self, col, row):
+        id = f"{col};{row}"
+        petakButton = self.msButtons[id]
+        return petakButton.text() != "" and petakButton.text() != "💣"
+
     def markMinesweeperButton(self, col, row):
         id = f"{col};{row}"
         petakButton = self.msButtons[id]
@@ -214,6 +220,11 @@ class Ui_MainWindow(QObject):
         id = f"{col};{row}"
         petakButton = self.msButtons[id]
         petakButton.setText("")
+
+    def isMarkedMinesweeperButton(self, col, row):
+        id = f"{col};{row}"
+        petakButton = self.msButtons[id]
+        return petakButton.text() == "💣"
 
     def toggleMarkMinesweeperButton(self, col, row):
         id = f"{col};{row}"

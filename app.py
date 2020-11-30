@@ -21,6 +21,7 @@ class MainWindowUIClass(Ui_MainWindow):
     # slot
     def startAIButtonSlot(self):
         self.debugPrint("AI started!")
+        self.model.printToUi = self.debugPrint
         self.model.startAI()
         self.model.updater.progress.connect(self.updateUI)
         self.model.updater.start()
@@ -29,13 +30,14 @@ class MainWindowUIClass(Ui_MainWindow):
     # slot
     def resetButtonSlot(self):
         self.debugPrint("Resetting minesweeper")
-        self.model.program.is_finished = 2
         self.resetMinesweeperButton()
         self.model.bombs = 0
         self.model.size = 4
         self.model.bombLoc = []
+        self.sizeLineEdit.setText("4")
         self.bombsLineEdit.setText(str(self.model.bombs))
         self.jumlah_bomLabel.setText(str(self.model.bombs))
+        self.debugTextBrowser.clear()
 
     # slot
     def kotakButtonSlot(self, col, row):
@@ -72,15 +74,18 @@ class MainWindowUIClass(Ui_MainWindow):
 
     # slot
     def updateUI(self, papan):
-        for col, row, nilai_sel, status in papan:
-            if status == "closed":
-                self.markMinesweeperButton(col, row)
-                self.model.bombs -= 1
-                self.jumlah_bomLabel.setText(str(self.model.bombs))
-            elif nilai_sel == "X":
-                continue
-            else: #pasti kebuka dan ada nilainya
-                self.openMinesweeperButton(col, row, nilai_sel)
+        if papan:
+            for col, row, nilai_sel, status in papan:
+                if status == "flag" and not self.isMarkedMinesweeperButton(col, row):
+                    self.markMinesweeperButton(col, row)
+                    self.model.bombs -= 1
+                    self.jumlah_bomLabel.setText(str(self.model.bombs))
+                    self.debugPrint(f"AI marks petak {col}:{row} as bomb 💣")
+                elif nilai_sel == "X":
+                    continue
+                elif not self.isOpenedMinesweeperButton(col, row): #pasti kebuka dan ada nilainya
+                    self.openMinesweeperButton(col, row, nilai_sel)
+                    self.debugPrint(f"AI opens petak {col}:{row} and get nilai={nilai_sel} ✨")
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
