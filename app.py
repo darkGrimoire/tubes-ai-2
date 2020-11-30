@@ -83,7 +83,7 @@ class MainWindowUIClass(Ui_MainWindow):
                     self.debugPrint(f"AI marks petak {col}:{row} as bomb 💣")
                 elif nilai_sel == "X":
                     continue
-                elif not self.isOpenedMinesweeperButton(col, row): #pasti kebuka dan ada nilainya
+                elif nilai_sel != "F" and not self.isOpenedMinesweeperButton(col, row): #pasti kebuka dan ada nilainya
                     self.openMinesweeperButton(col, row, nilai_sel)
                     self.debugPrint(f"AI opens petak {col}:{row} and get nilai={nilai_sel} ✨")
 

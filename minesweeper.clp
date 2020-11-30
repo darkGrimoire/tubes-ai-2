@@ -251,7 +251,7 @@
     (retract ?flag)
     (retract ?sel_closed)
     (retract ?sumbom)
-    (assert (sel (col ?col) (row ?row) (status flag) (nilai ?x)))
+    (assert (sel (col ?col) (row ?row) (status flag) (nilai F)))
     (assert (jumlah_bom (- ?bom 1)))
     (loop-for-count (?i -1 1) do
         (loop-for-count (?j -1 1) do
@@ -321,6 +321,7 @@
     ?game <- (game mulai)
     =>
     (printout t "maneh kalah anjing" crlf)
+    (printui "You lose")
     (retract ?game)
     (assert (game selesai))
 )
@@ -331,6 +332,7 @@
     ?game_state <- (game mulai)
     =>
     (printout t "maneh menang, yey!!!" crlf)
+    (printui "You win!")
     (retract ?game_state)
     (assert (game selesai))
 )
