@@ -369,6 +369,7 @@
     ?game <- (game mulai)
     =>
     (printout t "maneh kalah anjing" crlf)
+    (printui "You lose")
     (retract ?game)
     (assert (game selesai))
 )
@@ -379,6 +380,7 @@
     ?game_state <- (game mulai)
     =>
     (printout t "maneh menang, yey!!!" crlf)
+    (printui "You win!")
     (retract ?game_state)
     (assert (game selesai))
 )

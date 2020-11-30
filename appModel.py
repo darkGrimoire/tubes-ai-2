@@ -39,5 +39,5 @@ class checkFromProgram(QThread):
             time.sleep(0.1)
         print("setup finished")
         while not self.model.program.is_finished == 2:
-            time.sleep(0.3)
+            time.sleep(0.2)
             self.progress.emit(self.model.program.updatePapanBasedOnFacts())

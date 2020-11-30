@@ -1,8 +1,29 @@
 # tubes-ai-2
 Tubes AI 2: CLIPS Exploration
 
-- Buka command prompt di root directory program
-- Jalankan file python menggunakan python
-- masukkan data-data yang dibutuhkan
-- .......
-- profit
+
+
+-------
+## Requirements
+
+- Python 3.x
+- pyqt5 (for GUI version)
+- clipspy
+
+-------
+## Usage
+
+main.py > Minesweeper AI console version  
+app.py > Minesweeper AI GUI version (unstable)
+
+-------
+### Run console version
+Run in terminal:
+```bash
+python main.py
+```
+### Run GUI version
+Run in terminal:
+```bash
+python app.py
+```

@@ -8,6 +8,7 @@ class MainProgram:
         print("Hallo")
         self.env.clear()
         self.env.define_function(self.getNilaiSel)
+        self.env.define_function(self.printui)
         self.env.load("minesweeper.clp")
         self.ukuran = 4
         self.jumlah_bom = 0
@@ -18,6 +19,9 @@ class MainProgram:
     def getNilaiSel(self, col, row):
         # INGET, di ARRAY disimpen dalam format papan[row][col]
         return self.papan[row][col]
+
+    def printui(self, msg):
+        self.printToUI(msg)
 
     def generateNilai(self):
         for i in range(self.ukuran):
@@ -57,13 +61,13 @@ class MainProgram:
                     else:
                         i += 1
                         continue
-                nilai_sel = re.search("(nilai ([0-9]|X)*)", str(fakta_sel))
+                nilai_sel = re.search("(nilai ([0-9]|X|F)*)", str(fakta_sel))
                 nilai_sel = nilai_sel.group(0)
                 nilai_sel = nilai_sel.replace("nilai ","")
                 status = re.search("(status (flag|closed|opened)*)", str(fakta_sel))
                 status = status.group(0)
                 status = status.replace("status ", "")
-                status_papan.append((col, row, nilai_sel, status))
+                status_papan.append((row, col, nilai_sel, status))
         return status_papan
 
     def main(self):
@@ -92,6 +96,4 @@ class MainProgram:
             time.sleep(0.02)
         self.is_finished = 2
         self.printToUI('Program finished!')
-        for fact in self.env.facts():
-            print(fact)
     
