@@ -36,7 +36,6 @@
     (assert (input_complete no))
 )
 
-
 (defrule input_selesai
     ?status_input <- (input_complete no)
     (jumlah_bom ?total)
@@ -54,109 +53,6 @@
     (assert (open 0 0))
 )
 
-; (defrule bom_di_atas
-;     (empty_koor ?col ?row)
-;     (not (atas ?col ?row))
-;     (koordinat_bom ?x ?y)
-;     ?sel <- (sel (col ?col) (row ?row) (status ?c) (nilai ?d))
-;     (test (and (= ?col ?x) (= (+ ?row 1) ?y)))
-;     (not (test (= ?d -1)))
-;     =>
-;     (assert (atas ?col ?row))
-;     (retract ?sel)
-;     (assert (sel (col ?col) (row ?row) (nilai (+ ?d 1))))
-; )
-
-; (defrule bom_di_kanan_atas
-;     (empty_koor ?col ?row)
-;     (not (kanan_atas ?col ?row))
-;     (koordinat_bom ?x ?y)
-;     ?sel <- (sel (col ?col) (row ?row) (status ?c) (nilai ?d))
-;     (test (and (= (+ ?col 1) ?x) (= (+ ?row 1) ?y)))
-;     (not (test (= ?d -1)))
-;     =>
-;     (assert (kanan_atas ?col ?row))
-;     (retract ?sel)
-;     (assert (sel (col ?col) (row ?row) (nilai (+ ?d 1))))
-; )
-
-; (defrule bom_di_kanan
-;     (empty_koor ?col ?row)
-;     (not (kanan ?col ?row))
-;     (koordinat_bom ?x ?y)
-;     ?sel <- (sel (col ?col) (row ?row) (status ?c) (nilai ?d))
-;     (test (and (= (+ ?col 1) ?x) (= ?row ?y)))
-;     (not (test (= ?d -1)))
-;     =>
-;     (assert (kanan ?col ?row))
-;     (retract ?sel)
-;     (assert (sel (col ?col) (row ?row) (nilai (+ ?d 1))))
-; )
-
-; (defrule bom_di_kanan_bawah
-;     (empty_koor ?col ?row)
-;     (not (kanan_bawah ?col ?row))
-;     (koordinat_bom ?x ?y)
-;     ?sel <- (sel (col ?col) (row ?row) (status ?c) (nilai ?d))
-;     (test (and (= (+ ?col 1) ?x) (= (- ?row 1) ?y)))
-;     (not (test (= ?d -1)))
-;     =>
-;     (assert (kanan_bawah ?col ?row))
-;     (retract ?sel)
-;     (assert (sel (col ?col) (row ?row) (nilai (+ ?d 1))))
-; )
-
-; (defrule bom_di_bawah
-;     (empty_koor ?col ?row)
-;     (not (bawah ?col ?row))
-;     (koordinat_bom ?x ?y)
-;     ?sel <- (sel (col ?col) (row ?row) (status ?c) (nilai ?d))
-;     (test (and (= ?col ?x) (= (- ?row 1) ?y)))
-;     (not (test (= ?d -1)))
-;     =>
-;     (assert (bawah ?col ?row))
-;     (retract ?sel)
-;     (assert (sel (col ?col) (row ?row) (nilai (+ ?d 1))))
-; )
-
-; (defrule bom_di_kiri_bawah
-;     (empty_koor ?col ?row)
-;     (not (kiri_bawah ?col ?row))
-;     (koordinat_bom ?x ?y)
-;     ?sel <- (sel (col ?col) (row ?row) (status ?c) (nilai ?d))
-;     (test (and (= (- ?col 1) ?x) (= (- ?row 1) ?y)))
-;     (not (test (= ?d -1)))
-;     =>
-;     (assert (kiri_bawah ?col ?row))
-;     (retract ?sel)
-;     (assert (sel (col ?col) (row ?row) (nilai (+ ?d 1))))
-; )
-
-; (defrule bom_di_kiri
-;     (empty_koor ?col ?row)
-;     (not (kiri ?col ?row))
-;     (koordinat_bom ?x ?y)
-;     ?sel <- (sel (col ?col) (row ?row) (status ?c) (nilai ?d))
-;     (test (and (= (- ?col 1) ?x) (= ?row ?y)))
-;     (not (test (= ?d -1)))
-;     =>
-;     (assert (kiri ?col ?row))
-;     (retract ?sel)
-;     (assert (sel (col ?col) (row ?row) (nilai (+ ?d 1))))
-; )
-
-; (defrule bom_di_kiri_atas
-;     (empty_koor ?col ?row)
-;     (not (kiri_atas ?col ?row))
-;     (koordinat_bom ?x ?y)
-;     ?sel <- (sel (col ?col) (row ?row) (status ?c) (nilai ?d))
-;     (test (and (= (- ?col 1) ?x) (= (+ ?row 1) ?y)))
-;     (not (test (= ?d -1)))
-;     =>
-;     (assert (kiri_atas ?col ?row))
-;     (retract ?sel)
-;     (assert (sel (col ?col) (row ?row) (nilai (+ ?d 1))))
-; )
 (defrule buka_kotak
     (declare (salience 30))
     ?open <- (open ?col ?row)
@@ -222,13 +118,6 @@
     (assert (check ?col ?row))
 )
 
-;(defrule selesai_look
-;    (sel (col ?col) (row ?row) (status opened) (nilai ?x))
-;    (not (look_at_cell (col ?col) (row ?row) (col_n ?c) (row_n ?r)))
-;    =>
-;    (assert (check ?col ?row))
-;)
-
 (defrule check_kotak
     ?checking <- (check ?col ?row)
     ?checked_sel <- (sel (col ?col) (row ?row) (status opened) (nilai ?x))
@@ -242,16 +131,6 @@
         (retract ?checking)
         (retract ?sn)
         (assert (sel_neighbors (col ?col) (row ?row) (flags (+ ?f ?c)) (closed 0) (total ?t)))
-;        else
-;        (if (= ?f ?x)
-;            then
-;            (loop-for-count (?i -1 1) do
-;                (loop-for-count (?j -1 1) do
-;                    (assert (open (+ ?col ?i) (+ ?row ?j)))))
-;        )
-;        (retract ?checking)
-;        (retract ?sn)
-;        (assert (sel_neighbors (col ?col) (row ?row) (flags ?f) (closed 0) (total ?t)))
     )
 )
 
@@ -289,8 +168,6 @@
     (assert (jumlah_bom (- ?bom 1)))
     (loop-for-count (?i -1 1) do
         (loop-for-count (?j -1 1) do
-;            (retract (check (+ ?col ?i) (+ ?row ?j)))
-;            (assert (check (+ ?col ?i) (+ ?row ?j)))
             (if (not (and (= ?col (+ ?col ?i)) (= ?row (+ ?row ?j))))
                 then
                 (assert (addflag (+ ?col ?i) (+ ?row ?j)))
@@ -307,36 +184,6 @@
     (retract ?s)
     (assert (sel_neighbors (col ?c) (row ?r) (flags (+ ?fa 1)) (closed (- ?closed 1)) (total ?t)))
     (assert (check ?c ?r))
-)
-
-;(defrule check_kotak
-;    ?check <- (check ?col ?row)
-;    ?sel_checked <- (sel (col ?col) (row ?row) (status opened) (nilai ?x))
-;    (game mulai)
-;    =>
-;    (retract ?check)
-;    (loop-for-count (?k 1 ?x) do
-;        (loop-for-count (?i -1 1) do
-;            (loop-for-count (?j -1 1) do
-;                (assert (count (+ ?col ?i) (+ ?row ?j))))))
-;)
-
-(defrule count_prob_kotak
-    ?count <- (count ?col ?row)
-    (sel (col ?col) (row ?row) (status closed) (nilai ?x))
-    ?sel_prob <- (sel_prob (col ?col) (row ?row) (prob ?prob))
-    =>
-    (retract ?count)
-    (retract ?sel_prob)
-    (assert (sel_prob (col ?col) (row ?row) (prob (+ ?prob 1))))
-)
-
-(defrule count_prob_kotak_nol
-    ?count <- (count ?col ?row)
-    (sel (col ?col) (row ?row) (status closed) (nilai ?x))
-    =>
-    (retract ?count)
-    (assert (sel_prob (col ?col) (row ?row) (prob 1)))
 )
 
 (defrule buka_kotak_0
@@ -368,8 +215,8 @@
     (sel (col ?col) (row ?row) (status opened) (nilai -1))
     ?game <- (game mulai)
     =>
-    (printout t "maneh kalah anjing" crlf)
-    (printui "You lose")
+    (printout t "You lose..." crlf)
+    (printui "You lose...")
     (retract ?game)
     (assert (game selesai))
 )
@@ -379,8 +226,8 @@
     (jumlah_bom 0)
     ?game_state <- (game mulai)
     =>
-    (printout t "maneh menang, yey!!!" crlf)
-    (printui "You win!")
+    (printout t "You win!!!" crlf)
+    (printui "You win!!")
     (retract ?game_state)
     (assert (game selesai))
 )
