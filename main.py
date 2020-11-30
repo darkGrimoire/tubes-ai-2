@@ -3,9 +3,6 @@ import re
 
 papan = []
 env = clips.Environment()
-env.clear()
-env.load("minesweeper.clp")
-
 
 def cetakPapan():
     global papan
@@ -105,6 +102,9 @@ def getNilaiSel(col, row):
 
 if __name__ == "__main__":
     print("Hallo")
+    env.clear()
+    env.define_function(getNilaiSel)
+    env.load("minesweeper.clp")
     ukuran = 0
     jumlah_bom = 101
     # Di dalam papan tiap koordinat disimpan dalam bentuk papan[row][col]
@@ -156,4 +156,4 @@ if __name__ == "__main__":
     #     print(rule)
     for fact in env.facts():
         print(fact)
-    # cetakPapanBasedOnFacts()
+    cetakPapanBasedOnFacts()

@@ -5,6 +5,12 @@
     (slot nilai (default ?NONE))
 )
 
+(deftemplate sel_prob
+    (slot col (default ?NONE))
+    (slot row (default ?NONE))
+    (slot prob (default ?NONE))
+)
+
 ; Start the program
 (defrule start
     (declare (salience 500))
@@ -30,6 +36,7 @@
     =>
     (retract ?status_input)
     (assert (game mulai))
+    (assert (open 0 0))
 )
 
 ; (defrule bom_di_atas
@@ -138,16 +145,92 @@
 (defrule buka_kotak
     ?open <- (open ?col ?row)
     ?sel_closed <- (sel (col ?col) (row ?row) (status closed) (nilai ?x))
+    (game mulai)
     =>
     (retract ?open)
     (retract ?sel_closed)
-    ; Assert si sel dengan nilai ambil dari fungsi python
-    ; (assert (sel (col ?col) (row ?row) (status opened) (nilai )))
+    (bind ?nilai (getNilaiSel ?col ?row))
+    (assert (sel (col ?col) (row ?row) (status opened) (nilai ?nilai)))
+    (loop-for-count (?i -1 1) do
+        (loop-for-count (?j -1 1) do
+            (assert (check (+ ?col ?i) (+ ?row ?j)))))
+)
+
+(defrule flag_kotak
+    ?flag <- (flag ?col ?row)
+    ?sel_closed <- (sel (col ?col) (row ?row) (status closed) (nilai ?x))
+    ?sumbom <- (jumlah_bom ?bom)
+    (game mulai)
+    =>
+    (retract ?flag)
+    (retract ?sel_closed)
+    (retract ?sumbom)
+    (assert (sel (col ?col) (row ?row) (status flag) (nilai ?x)))
+    (assert (jumlah_bom (- ?bom 1)))
+    (loop-for-count (?i -1 1) do
+        (loop-for-count (?j -1 1) do
+            (assert (check (+ ?col ?i) (+ ?row ?j)))))
+)
+
+(defrule check_kotak
+    ?check <- (check ?col ?row)
+    ?sel_checked <- (sel (col ?col) (row ?row) (status opened) (nilai ?x))
+    (game mulai)
+    =>
+    (retract ?check)
+    (loop-for-count (?k 1 ?x) do
+        (loop-for-count (?i -1 1) do
+            (loop-for-count (?j -1 1) do
+                (assert (count (+ ?col ?i) (+ ?row ?j))))))
+)
+
+(defrule count_prob_kotak
+    ?count <- (count ?col ?row)
+    (sel (col ?col) (row ?row) (status closed) (nilai ?x))
+    ?sel_prob <- (sel_prob (col ?col) (row ?row) (prob ?prob))
+    =>
+    (retract ?count)
+    (retract ?sel_prob)
+    (assert (sel_prob (col ?col) (row ?row) (prob (+ ?prob 1))))
+)
+
+(defrule count_prob_kotak_nol
+    ?count <- (count ?col ?row)
+    (sel (col ?col) (row ?row) (status closed) (nilai ?x))
+    =>
+    (retract ?count)
+    (assert (sel_prob (col ?col) (row ?row) (prob 1)))
+)
+
+(defrule buka_kotak_0
+    ?sel_opened <- (sel (col ?col) (row ?row) (status opened) (nilai 0))
+    (game mulai)
+    =>
+    (loop-for-count (?i -1 1) do
+        (loop-for-count (?j -1 1) do
+            (assert (open (+ ?col ?i) (+ ?row ?j)))))
 )
 
 (defrule pingin_buka_tapi_gak_ada
     ?open <- (open ?col ?row)
     (not (sel (col ?col) (row ?row) (status ?status) (nilai ?x)))
+    (game mulai)
     =>
     (retract ?open)
+)
+
+(defrule pingin_cek_tapi_gak_ada
+    ?check <- (check ?col ?row)
+    (not (sel (col ?col) (row ?row) (status ?status) (nilai ?x)))
+    (game mulai)
+    =>
+    (retract ?check)
+)
+
+(defrule apakah_aq_kalah
+    (sel (col ?col) (row ?row) (status opened) (nilai -1))
+    ?game <- (game mulai)
+    =>
+    (printout t "maneh kalah anjing" crlf)
+    (retract ?game)
 )
