@@ -187,6 +187,7 @@
 )
 
 (defrule buka_kotak_0
+    (declare (salience 200))
     ?sel_opened <- (sel (col ?col) (row ?row) (status opened) (nilai 0))
     (game mulai)
     =>
