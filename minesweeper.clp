@@ -323,3 +323,12 @@
     (printout t "maneh kalah anjing" crlf)
     (retract ?game)
 )
+
+(defrule apakah_aq_menang
+    (declare (salience 500))
+    (jumlah_bom 0)
+    ?game_state <- (game mulai)
+    =>
+    (retract ?game_state)
+    (assert (game selesai))
+)
