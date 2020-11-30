@@ -100,7 +100,7 @@ def getNilaiSel(col, row):
     return papan[row][col]
 
 
-def main():
+if __name__ == "__main__":
     print("Hallo")
     env.clear()
     env.define_function(getNilaiSel)
@@ -157,6 +157,3 @@ def main():
     for fact in env.facts():
         print(fact)
     cetakPapanBasedOnFacts()
-
-if __name__ == "__main__":
-    main()
