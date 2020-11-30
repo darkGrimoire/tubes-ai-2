@@ -178,6 +178,15 @@
     )
 )
 
+(defrule buka_flag
+    ?open <- (open ?col ?row)
+    ?sel <- (sel (col ?col) (row ?row) (status flag) (nilai ?x))
+    (game mulai)
+    =>
+    (retract ?open)
+)
+
+
 (defrule look_tapi_gak_ada
     ?look <- (look_at_cell (col ?col) (row ?row) (col_n ?cn) (row_n ?rn))
     (not (sel (col ?cn) (row ?rn) (status ?status) (nilai ?x)))
@@ -224,7 +233,7 @@
     ?checked_sel <- (sel (col ?col) (row ?row) (status opened) (nilai ?x))
     ?sn <- (sel_neighbors (col ?col) (row ?row) (flags ?f) (closed ?c) (total ?t))
     =>
-    (if (= ?x (+ ?f ?c))
+    (if (and (= ?x (+ ?f ?c)) (not (= ?c 0)))
         then
         (loop-for-count (?i -1 1) do
             (loop-for-count (?j -1 1) do
@@ -232,8 +241,32 @@
         (retract ?checking)
         (retract ?sn)
         (assert (sel_neighbors (col ?col) (row ?row) (flags (+ ?f ?c)) (closed 0) (total ?t)))
+;        else
+;        (if (= ?f ?x)
+;            then
+;            (loop-for-count (?i -1 1) do
+;                (loop-for-count (?j -1 1) do
+;                    (assert (open (+ ?col ?i) (+ ?row ?j)))))
+;        )
+;        (retract ?checking)
+;        (retract ?sn)
+;        (assert (sel_neighbors (col ?col) (row ?row) (flags ?f) (closed 0) (total ?t)))
     )
 )
+
+(defrule check_kotak_fin
+    ?checking <- (check ?col ?row)
+    ?checked_sel <- (sel (col ?col) (row ?row) (status opened) (nilai ?x))
+    ?sn <- (sel_neighbors (col ?col) (row ?row) (flags ?x) (closed ?c) (total ?t))
+    =>
+    (loop-for-count (?i -1 1) do
+        (loop-for-count (?j -1 1) do
+            (assert (open (+ ?col ?i) (+ ?row ?j)))))
+    (retract ?checking)
+    (retract ?sn)
+    (assert (sel_neighbors (col ?col) (row ?row) (flags ?x) (closed 0) (total ?t)))
+)
+
 
 (defrule flag_tapi_gak_ada
     ?mark <- (flag ?col ?row)
@@ -256,9 +289,23 @@
     (loop-for-count (?i -1 1) do
         (loop-for-count (?j -1 1) do
 ;            (retract (check (+ ?col ?i) (+ ?row ?j)))
-            (assert (check (+ ?col ?i) (+ ?row ?j)))
+;            (assert (check (+ ?col ?i) (+ ?row ?j)))
+            (if (not (and (= ?col (+ ?col ?i)) (= ?row (+ ?row ?j))))
+                then
+                (assert (addflag (+ ?col ?i) (+ ?row ?j)))
+            )
         )
     )
+)
+
+(defrule tambah_flag
+    ?f <- (addflag ?c ?r)
+    ?s <- (sel_neighbors (col ?c) (row ?r) (flags ?fa) (closed ?closed) (total ?t))
+    =>
+    (retract ?f)
+    (retract ?s)
+    (assert (sel_neighbors (col ?c) (row ?r) (flags (+ ?fa 1)) (closed (- ?closed 1)) (total ?t)))
+    (assert (check ?c ?r))
 )
 
 ;(defrule check_kotak
